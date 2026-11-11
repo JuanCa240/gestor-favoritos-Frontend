@@ -90,7 +90,6 @@ function renderFavorites() {
 
 // Procesar el usuario que llega a favoritos.
 function handleDrop(userId) {
-
     const user = users.find(user => user.id === userId);
 
     if (!user) {
@@ -100,25 +99,49 @@ function handleDrop(userId) {
 
     const result = addFavorite(user);
 
-    alert(result.message);
+    if (result.success) {
+        showToast("¡Usuario agregado a favoritos!", "success");
+    } else {
+        showToast(result.message, "warning");
+    }
 
-    // Sincronizar la interfaz con los favoritos reales.
     renderFavorites();
 }
 
 // Eliminar un usuario de favoritos.
 function handleRemove(userId) {
-
     const removed = removeFavorite(userId);
 
     if (removed) {
-        alert("Usuario eliminado de favoritos.");
+        showToast("Usuario eliminado de favoritos.", "info");
     }
 
-    // Restaurar ambas listas con sus datos actuales.
     renderUsers(users);
     renderFavorites();
 }
+
+// Muestra notificaciones temporales en pantalla sin interrumpir la navegación del usuario.
+
+function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+
+    const toast = document.createElement("div");
+
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("ocultar");
+
+        toast.addEventListener("animationend", () => {
+            toast.remove();
+        }, { once: true });
+
+    }, 2500);
+}
+
 
 // Inicializar aplicación
 async function initializeApp() {

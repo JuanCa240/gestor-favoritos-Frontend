@@ -1,3 +1,4 @@
+
 /* =========================================
    RESET Y BASE
 ========================================= */
@@ -74,7 +75,7 @@ body {
     border-radius: 10px;
     font-weight: 600;
     font-size: 14px;
-    transition: background 0.25s ease, transform 0.25s ease;
+    transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
 .menu-item:hover {
@@ -239,17 +240,34 @@ body {
     transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
-.favorites-container.drag-over {
-    background-color: #efeaff;
-    border-color: #7555e8;
-}
-
 .empty-message {
     color: #837aa3;
     text-align: center;
     width: 100%;
     padding: 40px 10px;
     font-size: 14px;
+}
+
+/* =========================================
+   ESTILOS DE SORTABLEJS
+========================================= */
+
+/* Tarjeta seleccionada durante el arrastre */
+.sortable-chosen {
+    cursor: grabbing;
+}
+
+/* Espacio que representa la posición de la tarjeta */
+.sortable-ghost {
+    opacity: 0.35;
+    border: 2px dashed #8b5cf6;
+    border-radius: 15px;
+}
+
+/* Tarjeta que se está arrastrando */
+.sortable-drag {
+    cursor: grabbing;
+    opacity: 0.9;
 }
 
 /* =========================================
@@ -326,6 +344,7 @@ body {
         opacity: 0;
         transform: translateY(15px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -337,6 +356,7 @@ body {
         opacity: 0;
         transform: scale(0.94);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -419,24 +439,83 @@ body {
     }
 }
 
-/* Elemento que estamos arrastrando */
-.sortable-chosen {
-    cursor: grabbing;
+
+/* =========================================
+   NOTIFICACIONES TOAST
+========================================= */
+
+#toast-container {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-/* Espacio que indica dónde se colocará la tarjeta */
-.sortable-ghost {
-    opacity: 0.35;
-    border: 2px dashed #8b5cf6;
-    border-radius: 15px;
+.toast {
+    min-width: 280px;
+    max-width: 350px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    animation: toastEntrada 0.3s ease;
 }
 
-/* Tarjeta durante el movimiento */
-.user-card {
-    cursor: grab;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.toast.success {
+    background-color: #238653;
 }
 
-.user-card:active {
-    cursor: grabbing;
+.toast.warning {
+    background-color: #c47a20;
 }
+
+.toast.info {
+    background-color: #c71c1c;
+}
+
+.toast.ocultar {
+    animation: toastSalida 0.3s ease forwards;
+}
+
+@keyframes toastEntrada {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastSalida {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+}
+
+@media (max-width: 600px) {
+    #toast-container {
+        top: 15px;
+        right: 15px;
+        left: 15px;
+    }
+
+    .toast {
+        min-width: auto;
+        max-width: none;
+    }
+}
+
