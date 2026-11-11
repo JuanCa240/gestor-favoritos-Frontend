@@ -1,0 +1,1 @@
+// Guardar y recuperar favoritos

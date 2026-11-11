@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FavSpace | Gestor de Favoritos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- Contenedor principal -->
+    <div class="app-container">
+
+        <!-- Menú lateral -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>FavSpace</h1>
+                <p>Tu espacio favorito</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="#explorar" class="menu-item active"> Explorar </a>
+                <a href="#favoritos" class="menu-item"> Mis Favoritos </a>
+                <a href="#ubicacion" class="menu-item"> Ubicación </a>
+                <a href="#estadisticas" class="menu-item"> Estadísticas </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+
+            <!-- Encabezado -->
+            <header class="top-header">
+                <div>
+                    <h2>¡Encuentra tus usuarios favoritos!</h2>
+                    <p>Explora, descubre y guarda tus usuarios preferidos.</p>
+                </div>
+
+                <div id="location-status">
+                    Ubicación: pendiente
+                </div>
+            </header>
+
+            <!-- Sección de exploración -->
+            <section id="explorar" class="explore-section">
+
+                <div class="section-header">
+                    <h2>Usuarios disponibles</h2>
+                    <p>Descubre nuevos perfiles.</p>
+                </div>
+
+                <!-- Aquí aparecerán las tarjetas de usuarios -->
+                <div id="users-container" class="users-container">
+
+                </div>
+
+            </section>
+
+            <!-- Sección de favoritos -->
+            <section id="favoritos" class="favorites-section">
+
+                <div class="section-header">
+                    <h2>Mis Favoritos</h2>
+                    <p>Arrastra aquí los usuarios que quieras guardar.</p>
+                </div>
+
+                <!-- Zona de destino del Drag and Drop -->
+                <div id="favorites-container" class="favorites-container">
+                    <p class="empty-message"> Todavía no tienes favoritos. </p>
+                </div>
+
+            </section>
+
+            <!-- Información de ubicación -->
+            <section id="ubicacion" class="location-section">
+
+                <h2>Mi ubicación</h2>
+
+                <div id="user-location">
+                    <p>Tu ubicación aparecerá aquí.</p>
+                </div>
+
+                <button id="get-location-btn"> Obtener mi ubicación </button>
+
+            </section>
+
+            <!-- Estadísticas -->
+            <section id="estadisticas" class="statistics-section">
+
+                <h2>Tus estadísticas</h2>
+
+                <div class="statistics-info">
+                    <p>Favoritos guardados:</p>
+                    <span id="favorites-count">0</span>
+                </div>
+
+                <canvas id="favorites-chart" width="400" height="200"> Tu navegador no soporta Canvas. </canvas>
+
+            </section>
+        </main>
+    </div>
+    <script type="module" src="/js/app.js"></script>
+</body>
+</html>

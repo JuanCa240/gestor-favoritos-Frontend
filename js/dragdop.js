@@ -1,0 +1,1 @@
+// Controlar el arrastre de tarjetas
