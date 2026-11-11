@@ -1,15 +1,57 @@
-// Gestiona los favoritos agregando, eliminando y validación
+// Gestiona los favoritos: agregar, eliminar, validar y guardar en LocalStorage.
+
+/* =========================================
+   CONFIGURACIÓN
+========================================= */
+
+// Cantidad máxima de favoritos permitidos
+export const MAX_FAVORITES = 6;
+
+// Clave con la que se guarda la información en LocalStorage
+const STORAGE_KEY = "favspace:favorites";
 
 
 /* =========================================
-   MÓDULO DE FAVORITOS
+   LOCALSTORAGE
 ========================================= */
 
-// Arreglo donde almacenaremos los favoritos
-let favorites = [];
+// Lee los favoritos guardados. Si no hay datos o están dañados, devuelve [].
+function loadFavorites() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
 
-// Cantidad máxima de favoritos permitidos
-const MAX_FAVORITES = 6;
+        if (!stored) {
+            return [];
+        }
+
+        const parsed = JSON.parse(stored);
+
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
+
+        // Validamos cada usuario y respetamos el límite máximo
+        return parsed
+            .filter(user => user && user.id)
+            .slice(0, MAX_FAVORITES);
+
+    } catch (error) {
+        console.error("No fue posible leer los favoritos guardados:", error);
+        return [];
+    }
+}
+
+// Guarda el arreglo actual de favoritos.
+function saveFavorites() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
+    } catch (error) {
+        console.error("No fue posible guardar los favoritos:", error);
+    }
+}
+
+// Arreglo donde almacenamos los favoritos (se carga al iniciar)
+let favorites = loadFavorites();
 
 
 /* =========================================
@@ -46,8 +88,9 @@ export function addFavorite(user) {
         };
     }
 
-    // Agregar usuario
+    // Agregar usuario y persistir
     favorites.push(user);
+    saveFavorites();
 
     return {
         success: true,
@@ -67,7 +110,14 @@ export function removeFavorite(userId) {
 
     // .filter: Crea un nuevo arreglo excluyendo al usuario que queremos eliminar.
     favorites = favorites.filter(favorite => favorite.id !== Number(userId));
-    return favorites.length < previousLength;
+
+    const removed = favorites.length < previousLength;
+
+    if (removed) {
+        saveFavorites();
+    }
+
+    return removed;
 
 }
 
