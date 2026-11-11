@@ -1,4 +1,4 @@
-// Agregar, eliminar y validar favoritos
+// Gestiona los favoritos agregando, eliminando y validación
 
 
 /* =========================================

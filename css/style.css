@@ -419,7 +419,24 @@ body {
     }
 }
 
-.user-card:nth-child(2) { animation-delay: 0.05s; }
-.user-card:nth-child(3) { animation-delay: 0.1s; }
-.user-card:nth-child(4) { animation-delay: 0.15s; }
-.user-card:nth-child(5) { animation-delay: 0.2s; }
+/* Elemento que estamos arrastrando */
+.sortable-chosen {
+    cursor: grabbing;
+}
+
+/* Espacio que indica dónde se colocará la tarjeta */
+.sortable-ghost {
+    opacity: 0.35;
+    border: 2px dashed #8b5cf6;
+    border-radius: 15px;
+}
+
+/* Tarjeta durante el movimiento */
+.user-card {
+    cursor: grab;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-card:active {
+    cursor: grabbing;
+}

@@ -1,5 +1,5 @@
 
-// Configura el comportamiento de arrastrar y soltar.
+// Configura el arrastre entre Explorar y Favoritos utilizando SortableJS.
 
 export function setupDragAndDrop(
     usersContainer,
@@ -8,81 +8,52 @@ export function setupDragAndDrop(
     onRemove
 ) {
 
-    // Permite arrastrar tarjetas desde Explorar.
-    usersContainer.addEventListener("dragstart", (event) => {
-        const card = event.target.closest(".user-card");
+    // Configuración de la lista de usuarios.
+    Sortable.create(usersContainer, {
 
-        if (!card) return;
+        group: {
+            name: "favspace",
+            pull: "clone",
+            put: true
+        },
 
-        event.dataTransfer.setData("text/plain", card.dataset.userId);
-        event.dataTransfer.effectAllowed = "move";
+        animation: 200,
+        sort: false,
 
-        card.classList.add("dragging");
-    });
+        ghostClass: "sortable-ghost",
+        chosenClass: "sortable-chosen",
 
-    // Permite arrastrar tarjetas desde Favoritos.
-    favoritesContainer.addEventListener("dragstart", (event) => {
-        const card = event.target.closest(".user-card");
+        // Se ejecuta cuando llega un usuario desde otra lista.
+        onAdd: (event) => {
 
-        if (!card) return;
+            const userId = Number(event.item.dataset.userId);
 
-        event.dataTransfer.setData("text/plain", card.dataset.userId);
-        event.dataTransfer.effectAllowed = "move";
-
-        card.classList.add("dragging");
-    });
-
-    // Quita el efecto visual al terminar el arrastre.
-    [usersContainer, favoritesContainer].forEach(container => {
-        container.addEventListener("dragend", (event) => {
-            const card = event.target.closest(".user-card");
-
-            if (card) {
-                card.classList.remove("dragging");
-            }
-        });
-    });
-
-    // Permite soltar elementos en ambas zonas.
-    [usersContainer, favoritesContainer].forEach(container => {
-
-        container.addEventListener("dragover", (event) => {
-            event.preventDefault();
-
-            event.dataTransfer.dropEffect = "move";
-            container.classList.add("drag-over");
-        });
-
-        container.addEventListener("dragleave", (event) => {
-            if (!container.contains(event.relatedTarget)) {
-                container.classList.remove("drag-over");
-            }
-        });
-    });
-
-    // Soltar un usuario en Favoritos.
-    favoritesContainer.addEventListener("drop", (event) => {
-        event.preventDefault();
-
-        favoritesContainer.classList.remove("drag-over");
-
-        const userId = event.dataTransfer.getData("text/plain");
-
-        if (userId) {
-            onDrop(Number(userId));
+            onRemove(userId);
         }
     });
 
-    // Soltar un favorito de regreso a Explorar.
-    usersContainer.addEventListener("drop", (event) => {
-        event.preventDefault();
+    // Configuración de la lista de favoritos.
+    Sortable.create(favoritesContainer, {
 
-        usersContainer.classList.remove("drag-over");
+        group: {
+            name: "favspace",
+            pull: true,
+            put: true
+        },
 
-        const userId = event.dataTransfer.getData("text/plain");
+        animation: 200,
+        sort: true,
 
-        if (userId) {
-            onRemove(Number(userId));
+        ghostClass: "sortable-ghost",
+        chosenClass: "sortable-chosen",
+
+        // Se ejecuta cuando llega un usuario desde Explorar.
+        onAdd: (event) => {
+
+            const userId = Number(event.item.dataset.userId);
+
+            onDrop(userId);
         }
     });
+
 }

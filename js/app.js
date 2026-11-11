@@ -7,6 +7,7 @@ import { addFavorite,getFavorites,removeFavorite } from "./favorites.js";
 const usersContainer = document.querySelector("#users-container");
 const favoritesContainer = document.querySelector("#favorites-container");
 
+// crea las tarjetas
 let users = [];
 
 // Función para mostrar los usuarios
@@ -21,9 +22,6 @@ function renderUsers(users) {
 
         // Identificador del usuario para reconocerlo durante el arrastre.
         card.dataset.userId = user.id;
-
-        // Permitir arrastrar la tarjeta.
-        card.draggable = true;
 
         const image = document.createElement("img");
         image.src = user.image;
@@ -69,9 +67,6 @@ function renderFavorites() {
         // Identificar el usuario durante el arrastre.
         card.dataset.userId = user.id;
 
-        // Permitir arrastrar el favorito.
-        card.draggable = true;
-
         const image = document.createElement("img");
         image.src = user.image;
         image.alt = `Fotografía de ${user.firstName}`;
@@ -93,31 +88,36 @@ function renderFavorites() {
     });
 }
 
-// Procesar el usuario que soltamos en favoritos.
+// Procesar el usuario que llega a favoritos.
 function handleDrop(userId) {
 
     const user = users.find(user => user.id === userId);
 
-    if (!user) return;
+    if (!user) {
+        renderFavorites();
+        return;
+    }
 
     const result = addFavorite(user);
 
     alert(result.message);
 
-    if (result.success) {
-        renderFavorites();
-    }
+    // Sincronizar la interfaz con los favoritos reales.
+    renderFavorites();
 }
 
-// Eliminar un usuario de favoritos al devolverlo a Explorar.
+// Eliminar un usuario de favoritos.
 function handleRemove(userId) {
 
     const removed = removeFavorite(userId);
 
     if (removed) {
-        renderFavorites();
         alert("Usuario eliminado de favoritos.");
     }
+
+    // Restaurar ambas listas con sus datos actuales.
+    renderUsers(users);
+    renderFavorites();
 }
 
 // Inicializar aplicación
