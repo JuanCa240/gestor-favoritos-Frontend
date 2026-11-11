@@ -8,6 +8,7 @@
 
     <title>FavSpace | Gestor de Favoritos</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet"href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 </head>
 <body>
     <div id="toast-container"></div>
@@ -83,6 +84,9 @@
                     <p>Tu ubicación aparecerá aquí.</p>
                 </div>
 
+                <!-- Mapa interactivo de la ubicación -->
+                <div id="location-map"></div>
+
                 <button id="get-location-btn"> Obtener mi ubicación </button>
 
             </section>
@@ -102,6 +106,8 @@
             </section>
         </main>
     </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
     <script type="module" src="/js/app.js"></script>
 </body>

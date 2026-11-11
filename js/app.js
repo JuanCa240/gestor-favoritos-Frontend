@@ -1,19 +1,8 @@
 // Conectar todos los módulos y coordina la aplicación.
 import { getUsers } from "./api.js";
 import { setupDragAndDrop } from "./dragdrop.js";
-import {
-    addFavorite,
-    getFavorites,
-    getFavoritesCount,
-    removeFavorite,
-    MAX_FAVORITES
-} from "./favorites.js";
-import {
-    getUserPosition,
-    getDistanceKm,
-    findNearestUser,
-    getLocationErrorMessage
-} from "./location.js";
+import {addFavorite,getFavorites,getFavoritesCount,removeFavorite,MAX_FAVORITES} from "./favorites.js";
+import {getUserPosition,getDistanceKm,findNearestUser,getLocationErrorMessage} from "./location.js";
 import { drawFavoritesChart } from "./canvas.js";
 
 // Obtener los elementos HTML
@@ -28,6 +17,10 @@ const favoritesChart = document.querySelector("#favorites-chart");
 // Estado de la aplicación
 let users = [];
 let currentPosition = null;
+
+// Referencias al mapa y al marcador de ubicación.
+let locationMap = null;
+let locationMarker = null;
 
 
 /* =========================================
@@ -158,7 +151,7 @@ function handleRemove(userId) {
    UBICACIÓN (GEOLOCATION API)
 ========================================= */
 
-// Muestra las coordenadas y el usuario más cercano.
+// Muestra las coordenadas, el usuario más cercano y el mapa.
 function renderLocation() {
 
     userLocation.innerHTML = "";
@@ -187,7 +180,44 @@ function renderLocation() {
     });
 
     locationStatus.textContent = "Ubicación: activa";
+
+    // Crear el mapa si todavía no existe.
+    if (!locationMap) {
+
+        locationMap = L.map("location-map").setView(
+            [currentPosition.lat, currentPosition.lng],
+            14
+        );
+
+        // Cargar los mapas de OpenStreetMap.
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(locationMap);
+
+        // Crear el marcador de ubicación.
+        locationMarker = L.marker([
+            currentPosition.lat,
+            currentPosition.lng
+        ]).addTo(locationMap);
+
+        locationMarker.bindPopup("¡Estás aquí!").openPopup();
+
+    } else {
+
+        // Actualizar el mapa si se vuelve a solicitar la ubicación.
+        locationMap.setView(
+            [currentPosition.lat, currentPosition.lng],
+            14
+        );
+
+        locationMarker.setLatLng([
+            currentPosition.lat,
+            currentPosition.lng
+        ]);
+
+    }
 }
+
 
 // Pide la ubicación al navegador y actualiza la interfaz.
 async function handleGetLocation() {

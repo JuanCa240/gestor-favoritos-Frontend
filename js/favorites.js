@@ -1,57 +1,24 @@
-// Gestiona los favoritos: agregar, eliminar, validar y guardar en LocalStorage.
+
+// Gestiona los favoritos: agregar, eliminar, validar y consultar.
+
+// Importar las funciones encargadas del almacenamiento.
+import { loadFavorites, saveFavorites } from "./storage.js";
+
 
 /* =========================================
    CONFIGURACIÓN
 ========================================= */
 
-// Cantidad máxima de favoritos permitidos
+// Cantidad máxima de favoritos permitidos.
 export const MAX_FAVORITES = 6;
-
-// Clave con la que se guarda la información en LocalStorage
-const STORAGE_KEY = "favspace:favorites";
 
 
 /* =========================================
-   LOCALSTORAGE
+   ESTADO INICIAL
 ========================================= */
 
-// Lee los favoritos guardados. Si no hay datos o están dañados, devuelve [].
-function loadFavorites() {
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-
-        if (!stored) {
-            return [];
-        }
-
-        const parsed = JSON.parse(stored);
-
-        if (!Array.isArray(parsed)) {
-            return [];
-        }
-
-        // Validamos cada usuario y respetamos el límite máximo
-        return parsed
-            .filter(user => user && user.id)
-            .slice(0, MAX_FAVORITES);
-
-    } catch (error) {
-        console.error("No fue posible leer los favoritos guardados:", error);
-        return [];
-    }
-}
-
-// Guarda el arreglo actual de favoritos.
-function saveFavorites() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
-    } catch (error) {
-        console.error("No fue posible guardar los favoritos:", error);
-    }
-}
-
-// Arreglo donde almacenamos los favoritos (se carga al iniciar)
-let favorites = loadFavorites();
+// Recuperar los favoritos guardados al iniciar la aplicación.
+let favorites = loadFavorites(MAX_FAVORITES);
 
 
 /* =========================================
@@ -60,7 +27,7 @@ let favorites = loadFavorites();
 
 export function addFavorite(user) {
 
-    // Validar que el usuario exista
+    // Validar que el usuario exista.
     if (!user || !user.id) {
         return {
             success: false,
@@ -68,7 +35,7 @@ export function addFavorite(user) {
         };
     }
 
-    // Evitamos favoritos duplicados
+    // Evitar favoritos duplicados.
     const alreadyExists = favorites.some(
         favorite => favorite.id === user.id
     );
@@ -80,7 +47,7 @@ export function addFavorite(user) {
         };
     }
 
-    // Verificar límite de favoritos
+    // Verificar el límite de favoritos.
     if (favorites.length >= MAX_FAVORITES) {
         return {
             success: false,
@@ -88,15 +55,14 @@ export function addFavorite(user) {
         };
     }
 
-    // Agregar usuario y persistir
+    // Agregar el usuario y guardar los cambios.
     favorites.push(user);
-    saveFavorites();
+    saveFavorites(favorites);
 
     return {
         success: true,
         message: "¡Usuario agregado a favoritos!"
     };
-
 }
 
 
@@ -108,17 +74,19 @@ export function removeFavorite(userId) {
 
     const previousLength = favorites.length;
 
-    // .filter: Crea un nuevo arreglo excluyendo al usuario que queremos eliminar.
-    favorites = favorites.filter(favorite => favorite.id !== Number(userId));
+    // Excluir del arreglo al usuario que queremos eliminar.
+    favorites = favorites.filter(
+        favorite => favorite.id !== Number(userId)
+    );
 
     const removed = favorites.length < previousLength;
 
+    // Guardar los cambios si se eliminó algún favorito.
     if (removed) {
-        saveFavorites();
+        saveFavorites(favorites);
     }
 
     return removed;
-
 }
 
 
@@ -129,7 +97,6 @@ export function removeFavorite(userId) {
 export function getFavorites() {
 
     return [...favorites];
-
 }
 
 
@@ -140,5 +107,4 @@ export function getFavorites() {
 export function getFavoritesCount() {
 
     return favorites.length;
-
 }

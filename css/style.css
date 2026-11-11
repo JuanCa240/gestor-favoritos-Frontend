@@ -519,3 +519,18 @@ body {
     }
 }
 
+
+/* =========================================
+   MAPA DE UBICACIÓN
+========================================= */
+
+#location-map {
+    width: 100%;
+    height: 350px;
+    margin: 18px 0;
+    border-radius: 16px;
+    border: 2px solid #e8e3fa;
+    overflow: hidden;
+    z-index: 1;
+}
+
